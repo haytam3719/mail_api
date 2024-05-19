@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 from pprint import pprint
@@ -15,10 +15,16 @@ api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(co
 
 @app.route('/send-email', methods=['POST'])
 def send_email():
+    data = request.get_json()
+    if 'email' not in data:
+        return jsonify({'message': 'Email is required'}), 400
+
+    recipient_email = data['email']
+
     # Define the email parameters
     email = sib_api_v3_sdk.SendSmtpEmail(
-        to=[{"email": "serge.salah4@gmail.com", "name": "Recipient Name"}],
-        sender={"email": "haytam.elmoufti@gmail.com", "name": "Attijariwafa"},
+        to=[{"email": recipient_email, "name": "Recipient Name"}],
+        sender={"email": "haytam.tita@gmail.com", "name": "Attijariwafa"},
         subject="Hello from Sendinblue",
         html_content="<html><body><h1>Congratulations!</h1><p>You successfully sent this email via the Sendinblue API.</p></body></html>"
     )

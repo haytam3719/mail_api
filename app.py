@@ -16,17 +16,19 @@ api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(co
 @app.route('/send-email', methods=['POST'])
 def send_email():
     data = request.get_json()
-    if 'email' not in data:
-        return jsonify({'message': 'Email is required'}), 400
+    if 'email' not in data or 'content' not in data or 'subject' not in data:
+        return jsonify({'message': 'Email, subject, and content are required'}), 400
 
     recipient_email = data['email']
+    email_content = data['content']
+    email_subject = data['subject']
 
     # Define the email parameters
     email = sib_api_v3_sdk.SendSmtpEmail(
         to=[{"email": recipient_email, "name": "Recipient Name"}],
         sender={"email": "haytam.tita@gmail.com", "name": "Attijariwafa"},
-        subject="Hello from Sendinblue",
-        html_content="<html><body><h1>Congratulations!</h1><p>You successfully sent this email via the Sendinblue API.</p></body></html>"
+        subject=email_subject,
+        html_content=email_content
     )
 
     # Send the email
